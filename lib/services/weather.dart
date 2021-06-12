@@ -5,16 +5,26 @@ import 'package:clima/utilities/constants.dart';
 const openWeatherMapURL = 'https://api.openweathermap.org/data/2.5/weather';
 
 class WeatherModel {
+  Future<dynamic> getCityWeather(String cityName) async {
+    var url = Uri.parse(
+        '$openWeatherMapURL?q=$cityName&appid=$apiKey&units=imperial');
+    NetworkHelper networkHelper = NetworkHelper(url);
+    var weatherData = await networkHelper.getData();
+    return weatherData;
+  }
+
   Future<dynamic> getLocationWeather() async {
     Location location = Location();
     await location.getCurrentLocation();
-    NetworkHelper networkHelper = NetworkHelper(Uri.parse(
-        '$openWeatherMapURL?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=imperial'));
+    var url = Uri.parse(
+        '$openWeatherMapURL?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=imperial');
+    NetworkHelper networkHelper = NetworkHelper(url);
     var weatherData = await networkHelper.getData();
     return weatherData;
   }
 
   String getWeatherIcon(int condition) {
+    print(condition);
     if (condition < 300) {
       return '🌩';
     } else if (condition < 400) {
@@ -35,11 +45,11 @@ class WeatherModel {
   }
 
   String getMessage(int temp) {
-    if (temp > 25) {
+    if (temp > 80) {
       return 'It\'s 🍦 time';
-    } else if (temp > 20) {
+    } else if (temp > 70) {
       return 'Time for shorts and 👕';
-    } else if (temp < 10) {
+    } else if (temp < 70) {
       return 'You\'ll need 🧣 and 🧤';
     } else {
       return 'Bring a 🧥 just in case';
